@@ -35,66 +35,36 @@ class Train
 
   def assign_a_route(route)
     @route = route
-    @current_station = $start_station
-    puts "Your current route is #{@route}. You're at the start station - #{@current_station}"
+    @route.full_path[0].train_arrives(self)
+    @current_station_id = 0
   end
 
   def go_next
-    next_id = $full_path.index(@current_station) + 1 if @current_station != $last_station
-    next_station = $full_path[next_id]
-    @current_station = next_station
-    puts "Current station is #{@current_station}"
+    return unless next_station
+
+    current_station.train_departure(self)
+    next_station.train_arrives(self)
+    @current_station_id += 1
   end
 
   def go_back
-    back_id = $full_path.index(@current_station) - 1 if @current_station != $start_station
-    previous_station = $full_path[back_id]
-    @current_station = previous_station
-    puts "Current station is #{@current_station}"
+    return unless previous_station
+
+    current_station.train_departure(self)
+    previous_station.train_arrives(self)
+    @current_station_id -= 1
   end
 
 
-  def current_station
-    @current_station
+  def choosen_route
+    @route.full_path[@current_station_id]
   end
 
   def previous_station
-    back_id = $full_path.index(@current_station) - 1
-    previous_station = $full_path[back_id]
-    puts previous_station
+    @route.full_path[@current_station_id - 1] if @current_station_id != 0
   end
 
   def next_station
-    next_id = $full_path.index(@current_station) + 1
-    next_station = $full_path[next_id]
-    puts next_station
-  end
-end
-
-class Route
-
-  $full_path = []
-
-  def initialize(start_station, last_station)
-    $start_station = start_station
-    $last_station = last_station
-    $full_path << start_station
-    $full_path << last_station
-  end
-
-  def add_station(name)
-    $full_path.insert(-2, name)
-    puts "Station #{name} added succesfully"
-  end
-
-  def delete_station(name)
-    $full_path.delete(name)
-    puts "Station #{name} deleted succesfully"
-  end
-
-  def station_list
-    $full_path.each do |station|
-      print station + ", "
-    end 
+    @route.full_path[@current_station_id + 1] if @current_station_id != -1
   end
 end
