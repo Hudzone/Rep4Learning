@@ -1,0 +1,7 @@
+require_relative "Station.rb"
+require_relative "Route.rb"
+require_relative "Train.rb"
+require_relative "CargoTrain.rb"
+require_relative "PassengerTrain.rb"
+require_relative "CargoWagon.rb"
+require_relative "PassengerWagon.rb"
